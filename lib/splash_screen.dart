@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cpi_result_checker/form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -19,15 +20,6 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8.0),
-          /* const Text(
-            'CPI\nResult Checker',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'PermanentMarker Regular',
-              fontSize: 24,
-              color: Color(0xFF0e607b),
-            ),
-          ),*/
           SizedBox(
             width: 250.0,
             child: DefaultTextStyle(
@@ -37,12 +29,21 @@ class SplashScreen extends StatelessWidget {
                 color: Color(0xFF0e607b),
               ),
               child: AnimatedTextKit(
+                totalRepeatCount: 1,
                 animatedTexts: [
                   TypewriterAnimatedText(
                     'CPI\nResult Checker',
                     speed: const Duration(milliseconds: 170),
                   ),
                 ],
+                onFinished: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FormScreen(),
+                    ),
+                  );
+                },
                 onTap: () {
                   print("Tap Event");
                 },
