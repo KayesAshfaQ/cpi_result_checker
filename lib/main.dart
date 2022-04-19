@@ -1,4 +1,4 @@
-import 'package:cpi_result_checker/splash_screen.dart';
+import 'package:cpi_result_checker/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CPI Result Checker',
       theme: ThemeData(
-        primaryColor: const Color(0xFF0e607b),
+        primarySwatch: Colors.blueGrey,
       ),
       home: const SplashScreen(),
     );
