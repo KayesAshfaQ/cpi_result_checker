@@ -1,18 +1,15 @@
 import 'package:cpi_result_checker/data/my_colors.dart';
 import 'package:flutter/material.dart';
 
-class InputField extends StatelessWidget {
-  InputField({
+class DropDownContainer extends StatelessWidget {
+  DropDownContainer({
     Key? key,
     required this.hint,
-    required this.detailHint,
-    required this.inputType,
-    required this.controller,
+    required this.dropDown,
   }) : super(key: key);
 
-  String hint, detailHint;
-  TextInputType inputType;
-  TextEditingController controller;
+  final String hint;
+  Widget dropDown;
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +34,8 @@ class InputField extends StatelessWidget {
             ),
           ),
           alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: TextField(
-            maxLines: 1,
-            controller: controller,
-            keyboardType: inputType,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(-12),
-              border: InputBorder.none,
-              hintText: detailHint,
-              hintStyle: Theme.of(context)
-                  .textTheme
-                  .bodyText2!
-                  .copyWith(color: MyColors.grey_40),
-            ),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: DropdownButtonHideUnderline(child: dropDown),
         ),
       ],
     );

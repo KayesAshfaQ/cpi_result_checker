@@ -1,5 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cpi_result_checker/screens/form_screen.dart';
+import 'package:cpi_result_checker/screens/information_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
