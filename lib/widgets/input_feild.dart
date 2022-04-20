@@ -8,11 +8,13 @@ class InputField extends StatelessWidget {
     required this.detailHint,
     required this.inputType,
     required this.controller,
+    required this.validator,
   }) : super(key: key);
 
   String hint, detailHint;
   TextInputType inputType;
   TextEditingController controller;
+  String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +40,11 @@ class InputField extends StatelessWidget {
           ),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: TextField(
+          child: TextFormField(
             maxLines: 1,
             controller: controller,
             keyboardType: inputType,
+            validator: validator,
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(-12),
               border: InputBorder.none,

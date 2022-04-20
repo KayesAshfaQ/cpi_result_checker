@@ -35,7 +35,7 @@ class DropDownContainer extends StatelessWidget {
           ),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: DropdownButtonHideUnderline(child: dropDown),
+          child: dropDown,
         ),
       ],
     );
