@@ -40,6 +40,7 @@ dependencies:
   #and renders them natively on mobile! https://pub.dev/packages/lottie
   lottie: ^1.3.0
   animated_text_kit: ^4.2.1
+  double_back_to_close_app: ^2.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,6 @@
+import 'package:cpi_result_checker/data/my_routes.dart';
+import 'package:cpi_result_checker/screens/information_screen.dart';
+import 'package:cpi_result_checker/screens/result_screen.dart';
 import 'package:cpi_result_checker/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +19,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: const SplashScreen(),
+      routes: {
+        MyRoutes.splashScreen: (context) => const SplashScreen(),
+        MyRoutes.informationScreen: (context) => const InformationScreen(),
+        MyRoutes.resultScreen: (context) => const ResultScreen(),
+      },
+      initialRoute: MyRoutes.splashScreen,
     );
   }
 }
