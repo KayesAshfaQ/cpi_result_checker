@@ -14,12 +14,16 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
-  final _formKey = GlobalKey<FormState>();
   final _rollController = TextEditingController();
   final _regController = TextEditingController();
 
   String? _semester;
   String? _department;
+
+  bool isRollValid = true;
+  bool isRegValid = true;
+  bool isSemesterValid = true;
+  bool isDeptValid = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,110 +34,94 @@ class _FormScreenState extends State<FormScreen> {
       ),
       backgroundColor: const Color(0xFFf2f2f2),
       body: Center(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            padding: const EdgeInsets.all(28),
-            shrinkWrap: true,
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Image.asset('assets/find.png', width: 80, height: 100),
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Fill-up the form\nto find your result_',
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    color: MyColors.main,
-                    fontFamily: 'Orbitron',
-                    fontSize: 18,
-                    letterSpacing: 1.5,
-                  ),
+        child: ListView(
+          padding: const EdgeInsets.all(28),
+          shrinkWrap: true,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Image.asset('assets/find.png', width: 80, height: 100),
+            ),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Fill-up the form\nto find your result_',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: MyColors.main,
+                  fontFamily: 'Orbitron',
+                  fontSize: 18,
+                  letterSpacing: 1.5,
                 ),
               ),
-              const SizedBox(height: 20),
-              InputField(
-                hint: 'Roll_',
-                detailHint: 'Enter your roll number',
-                inputType: TextInputType.number,
-                controller: _rollController,
-                validator: (value) => validate(value, 'roll can\'t be empty'),
-              ),
-              InputField(
-                hint: 'Registration_',
-                detailHint: 'Enter your registration number',
-                inputType: TextInputType.number,
-                controller: _regController,
-                validator: (value) =>
-                    validate(value, 'registration can\'t be empty'),
-              ),
-              DropDownContainer(
-                hint: 'Semester_',
-                dropDown: DropdownButtonFormField<String>(
-                  isExpanded: true,
-                  value: _semester,
-                  items: MyLists.semesters.map(buildMenuItem).toList(),
-                  onChanged: (String? value) =>
-                      setState(() => _semester = value!),
-                  hint: Text(
-                    'Choose your semester',
-                    style: MyStyles.hintStyle(context),
-                  ),
-                  decoration: MyStyles.noUnderline,
-                  validator: (value) =>
-                      validate(value, 'semester can\'t be empty'),
+            ),
+            const SizedBox(height: 20),
+            InputField(
+              hint: 'Roll_',
+              detailHint: 'Enter your roll number',
+              inputType: TextInputType.number,
+              controller: _rollController,
+              errorText: isRollValid ? null : 'roll can\'t be empty',
+            ),
+            InputField(
+              hint: 'Registration_',
+              detailHint: 'Enter your registration number',
+              inputType: TextInputType.number,
+              controller: _regController,
+              errorText: isRegValid ? null : 'registration can\'t be empty',
+            ),
+            DropDownContainer(
+              hint: 'Semester_',
+              dropDown: DropdownButton<String>(
+                isExpanded: true,
+                value: _semester,
+                items: MyLists.semesters.map(buildMenuItem).toList(),
+                onChanged: (String? value) =>
+                    setState(() => _semester = value!),
+                hint: Text(
+                  'Choose your semester',
+                  style: MyStyles.hintStyle(context),
                 ),
               ),
-              DropDownContainer(
-                hint: 'Department_',
-                dropDown: DropdownButtonFormField<String>(
-                  isExpanded: true,
-                  value: _department,
-                  items: MyLists.departments.map(buildMenuItem).toList(),
-                  onChanged: (String? value) =>
-                      setState(() => _department = value!),
-                  hint: Text(
-                    'Choose your department',
-                    style: MyStyles.hintStyle(context),
-                  ),
-                  //decoration: MyStyles.noUnderline,
-                  validator: (value) =>
-                      validate(value, 'department can\'t be empty'),
+              errorText: isSemesterValid ? null : 'semester can\'t be empty',
+            ),
+            DropDownContainer(
+              hint: 'Department_',
+              dropDown: DropdownButton<String>(
+                isExpanded: true,
+                value: _department,
+                items: MyLists.departments.map(buildMenuItem).toList(),
+                onChanged: (String? value) =>
+                    setState(() => _department = value!),
+                hint: Text(
+                  'Choose your department',
+                  style: MyStyles.hintStyle(context),
                 ),
               ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () => onCheckResult(),
-                child: const Text(
-                  'CHECK_result',
-                  style: TextStyle(
-                    fontFamily: 'Orbitron',
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 2,
-                  ),
+              errorText: isDeptValid ? null : 'department can\'t be empty',
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () => onCheckResult(),
+              child: const Text(
+                'CHECK_result',
+                style: TextStyle(
+                  fontFamily: 'Orbitron',
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 2,
                 ),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(MyColors.main),
-                  minimumSize: MaterialStateProperty.all(
-                    const Size.fromHeight(38),
-                  ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(MyColors.main),
+                minimumSize: MaterialStateProperty.all(
+                  const Size.fromHeight(38),
                 ),
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
     );
-  }
-
-  //validate all user inputs
-  String? validate(String? value, message) {
-    if (value == null || value.isEmpty) {
-      return message;
-    }
-    return null;
   }
 
   //drop down item builder
@@ -152,13 +140,43 @@ class _FormScreenState extends State<FormScreen> {
 
   //on button pressed
   void onCheckResult() {
-    if (_formKey.currentState!.validate()) {
+    if (validate()) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => const ResultScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const ResultScreen()),
       );
     }
+  }
+
+  bool validate() {
+    String? roll = _rollController.text.toString();
+    String? reg = _regController.text.toString();
+
+    //validate user inputs
+    if (roll.isEmpty) {
+      setState(() => isRollValid = false);
+    } else {
+      setState(() => isRollValid = true);
+    }
+
+    if (reg.isEmpty) {
+      setState(() => isRegValid = false);
+    } else {
+      setState(() => isRegValid = true);
+    }
+
+    if (_semester == null) {
+      setState(() => isSemesterValid = false);
+    } else {
+      setState(() => isSemesterValid = true);
+    }
+
+    if (_department == null) {
+      setState(() => isDeptValid = false);
+    } else {
+      setState(() => isDeptValid = true);
+    }
+
+    return isRollValid && isRegValid && isSemesterValid && isDeptValid;
   }
 }

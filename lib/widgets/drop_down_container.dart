@@ -1,4 +1,5 @@
 import 'package:cpi_result_checker/data/my_colors.dart';
+import 'package:cpi_result_checker/widgets/error_text.dart';
 import 'package:flutter/material.dart';
 
 class DropDownContainer extends StatelessWidget {
@@ -6,10 +7,12 @@ class DropDownContainer extends StatelessWidget {
     Key? key,
     required this.hint,
     required this.dropDown,
+    required this.errorText,
   }) : super(key: key);
 
   final String hint;
   Widget dropDown;
+  String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class DropDownContainer extends StatelessWidget {
         ),
         Container(
           height: 45,
-          margin: const EdgeInsets.only(top: 4, bottom: 10),
+          margin: const EdgeInsets.only(top: 4),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -35,8 +38,15 @@ class DropDownContainer extends StatelessWidget {
           ),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: dropDown,
+          child: DropdownButtonHideUnderline(
+            child: dropDown,
+          ),
         ),
+        Visibility(
+          visible: errorText == null ? false : true,
+          child: ErrorText(error: errorText ?? ''),
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }

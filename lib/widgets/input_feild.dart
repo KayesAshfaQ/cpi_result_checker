@@ -1,4 +1,5 @@
 import 'package:cpi_result_checker/data/my_colors.dart';
+import 'package:cpi_result_checker/widgets/error_text.dart';
 import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
@@ -8,13 +9,13 @@ class InputField extends StatelessWidget {
     required this.detailHint,
     required this.inputType,
     required this.controller,
-    required this.validator,
+    required this.errorText,
   }) : super(key: key);
 
   String hint, detailHint;
   TextInputType inputType;
   TextEditingController controller;
-  String? Function(String?)? validator;
+  String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class InputField extends StatelessWidget {
         ),
         Container(
           height: 45,
-          margin: const EdgeInsets.only(top: 4, bottom: 10),
+          margin: const EdgeInsets.only(top: 4),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -44,7 +45,6 @@ class InputField extends StatelessWidget {
             maxLines: 1,
             controller: controller,
             keyboardType: inputType,
-            validator: validator,
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(-12),
               border: InputBorder.none,
@@ -56,6 +56,11 @@ class InputField extends StatelessWidget {
             ),
           ),
         ),
+        Visibility(
+          visible: errorText == null ? false : true,
+          child: ErrorText(error: errorText ?? ''),
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }
