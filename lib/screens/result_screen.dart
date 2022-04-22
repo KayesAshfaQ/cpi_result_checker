@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cpi_result_checker/widgets/result_fail_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import '../data/my_text.dart';
@@ -21,6 +22,8 @@ class ResultScreen extends StatefulWidget {
 class _ResultScreenState extends State<ResultScreen> {
   Result? _result;
   bool _isSearchAnimVisible = true;
+  bool _isFailWizVisible = false;
+  bool _isSuccessWizVisible = false;
 
   String _name = '',
       _point = '',
@@ -39,9 +42,13 @@ class _ResultScreenState extends State<ResultScreen> {
         if (_result != null) {
           setState(() {
             _isSearchAnimVisible = false;
+            _isSuccessWizVisible = true;
           });
         } else {
-          FlutterToast.error('server issue!');
+          setState(() {
+            _isSearchAnimVisible = false;
+            _isFailWizVisible = true;
+          });
         }
       },
     );
@@ -65,7 +72,7 @@ class _ResultScreenState extends State<ResultScreen> {
               child: const SearchAnimationWidget(),
             ),
             Visibility(
-              visible: !_isSearchAnimVisible,
+              visible: _isSuccessWizVisible,
               child: ResultWidget(
                 name: _name,
                 point: _point,
@@ -74,7 +81,11 @@ class _ResultScreenState extends State<ResultScreen> {
                 session: _session,
                 grade: _grade,
               ),
-            )
+            ),
+            Visibility(
+              visible: _isFailWizVisible,
+              child: const ResultFailedWidget(),
+            ),
           ],
         ),
       ),
@@ -96,7 +107,6 @@ class _ResultScreenState extends State<ResultScreen> {
 
     int responseCode = response.statusCode;
     print(responseCode);
-    print(body['roll']);
 
     if (responseCode == 200) {
       _result = Result.fromJson(jsonDecode(response.body));
