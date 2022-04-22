@@ -1,11 +1,24 @@
+import 'dart:convert';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cpi_result_checker/data/my_routes.dart';
-import 'package:cpi_result_checker/screens/information_screen.dart';
+import 'package:cpi_result_checker/data/my_text.dart';
+import 'package:cpi_result_checker/model/department.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:http/http.dart' as http;
 
-class SplashScreen extends StatelessWidget {
+import '../utils/toast.dart';
+
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  List<Department> _departments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +53,7 @@ class SplashScreen extends StatelessWidget {
                       speed: const Duration(milliseconds: 170),
                     ),
                   ],
-                  onFinished: () => Navigator.pushReplacementNamed(
-                    context,
-                    MyRoutes.informationScreen,
-                  ),
-                  onTap: () {
-                    print("Tap Event");
-                  },
+                  onFinished: () => onTxtAnimFinish(),
                 ),
               ),
             ),
@@ -54,5 +61,37 @@ class SplashScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDepartments();
+  }
+
+  void getDepartments() async {
+    var url = Uri.parse(MyText.baseUrl + '/departments');
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      Iterable l = json.decode(response.body);
+      _departments =
+          List<Department>.from(l.map((model) => Department.fromJson(model)));
+    } else {
+      FlutterToast.error('Failed to load departments!');
+      throw Exception('Failed to load departments');
+    }
+  }
+
+  void onTxtAnimFinish() {
+    if (_departments.isNotEmpty) {
+      Navigator.pushReplacementNamed(
+        context,
+        MyRoutes.informationScreen,
+      );
+    } else {
+      FlutterToast.create(
+          'Failed to load departments!\nServer issue, try again later!');
+    }
   }
 }
