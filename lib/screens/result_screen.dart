@@ -1,7 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import '../data/my_text.dart';
+import '../data/storage_key.dart';
+import '../model/result.dart';
+import '../utils/toast.dart';
 import '../widgets/result_widget.dart';
 import '../widgets/search_widget.dart';
+
+import 'package:http/http.dart' as http;
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({Key? key}) : super(key: key);
@@ -11,18 +19,30 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  Result? _result;
   bool _isSearchAnimVisible = true;
+
+  String _name = '',
+      _point = '',
+      _roll = '',
+      _reg = '',
+      _session = '',
+      _grade = '';
 
   @override
   void initState() {
     super.initState();
+    checkResult();
     Timer(
       const Duration(seconds: 5),
       () {
-        //get auth token from cached
-        setState(() {
-          _isSearchAnimVisible = false;
-        });
+        if (_result != null) {
+          setState(() {
+            _isSearchAnimVisible = false;
+          });
+        } else {
+          FlutterToast.error('server issue!');
+        }
       },
     );
   }
@@ -46,11 +66,55 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
             Visibility(
               visible: !_isSearchAnimVisible,
-              child: const ResultWidget(),
+              child: ResultWidget(
+                name: _name,
+                point: _point,
+                roll: _roll,
+                reg: _reg,
+                session: _session,
+                grade: _grade,
+              ),
             )
           ],
         ),
       ),
     );
+  }
+
+  Future<int> checkResult() async {
+    var url = Uri.parse(MyText.baseUrl + '/results');
+
+    var body = GetStorage().read(StorageKey.information);
+
+    var response = await http.post(
+      url,
+      body: jsonEncode(body),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+    );
+
+    int responseCode = response.statusCode;
+    print(responseCode);
+    print(body['roll']);
+
+    if (responseCode == 200) {
+      _result = Result.fromJson(jsonDecode(response.body));
+
+      //update values
+      setState(() {
+        _name = _result!.student!.name!;
+        _point = _result!.totalPoint!;
+        _roll = _result!.student!.roll!.toString();
+        _reg = _result!.student!.reg!.toString();
+        _session = _result!.student!.session!;
+        _grade = _result!.grade!;
+      });
+    } else {
+      FlutterToast.error('Failed to load result!');
+      throw Exception('Failed to load result');
+    }
+
+    return response.statusCode;
   }
 }

@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:cpi_result_checker/data/my_colors.dart';
 import 'package:cpi_result_checker/data/my_lists.dart';
-import 'package:cpi_result_checker/data/my_routes.dart';
 import 'package:cpi_result_checker/data/my_styles.dart';
-import 'package:cpi_result_checker/screens/result_screen.dart';
+import 'package:cpi_result_checker/data/storage_key.dart';
+import 'package:cpi_result_checker/model/result.dart';
 import 'package:cpi_result_checker/widgets/drop_down_container.dart';
 import 'package:cpi_result_checker/widgets/input_feild.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+
+import '../data/my_routes.dart';
+import '../data/my_text.dart';
+import '../utils/toast.dart';
 
 class InformationScreen extends StatefulWidget {
   const InformationScreen({Key? key}) : super(key: key);
@@ -16,6 +23,12 @@ class InformationScreen extends StatefulWidget {
 }
 
 class _InformationScreenState extends State<InformationScreen> {
+  final box = GetStorage();
+
+  Map departmentMap = {};
+  List<String> departmentKeys = [];
+  List<String> semesterKeys = [];
+
   final _rollController = TextEditingController();
   final _regController = TextEditingController();
 
@@ -26,6 +39,14 @@ class _InformationScreenState extends State<InformationScreen> {
   bool isRegValid = true;
   bool isSemesterValid = true;
   bool isDeptValid = true;
+
+  @override
+  void initState() {
+    super.initState();
+    departmentMap = box.read(StorageKey.departments);
+    departmentKeys = departmentMap.keys.toList().cast<String>();
+    semesterKeys = MyLists.semesters.keys.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +102,7 @@ class _InformationScreenState extends State<InformationScreen> {
                 dropDown: DropdownButton<String>(
                   isExpanded: true,
                   value: _semester,
-                  items: MyLists.semesters.map(buildMenuItem).toList(),
+                  items: semesterKeys.map(buildMenuItem).toList(),
                   onChanged: (String? value) =>
                       setState(() => _semester = value!),
                   hint: Text(
@@ -96,7 +117,7 @@ class _InformationScreenState extends State<InformationScreen> {
                 dropDown: DropdownButton<String>(
                   isExpanded: true,
                   value: _department,
-                  items: MyLists.departments.map(buildMenuItem).toList(),
+                  items: departmentKeys.map(buildMenuItem).toList(),
                   onChanged: (String? value) =>
                       setState(() => _department = value!),
                   hint: Text(
@@ -146,9 +167,19 @@ class _InformationScreenState extends State<InformationScreen> {
   }
 
   //on button pressed
-  void onCheckResult() {
+  void onCheckResult() async {
     if (validate()) {
-      Navigator.pushNamed(context, MyRoutes.resultScreen);
+
+      Map<String, String> infoMap = {
+        'roll': _rollController.text.toString(),
+        'reg': _regController.text.toString(),
+        'department_id': departmentMap[_department].toString(),
+        'semester_id': MyLists.semesters[_semester].toString(),
+      };
+
+      box.write(StorageKey.information, infoMap).whenComplete(
+            () => Navigator.pushNamed(context, MyRoutes.resultScreen),
+          );
     }
   }
 

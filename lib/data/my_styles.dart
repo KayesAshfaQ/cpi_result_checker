@@ -6,4 +6,11 @@ class MyStyles {
       Theme.of(context).textTheme.bodyText2!.copyWith(color: MyColors.grey_40);
 
   static const noUnderline = InputDecoration(border: InputBorder.none);
+
+  static const resultRow = TextStyle(
+      fontFamily: 'Orbitron',
+      color: MyColors.main,
+      fontWeight: FontWeight.w600,
+      fontSize: 16
+  );
 }

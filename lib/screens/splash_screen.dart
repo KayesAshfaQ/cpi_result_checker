@@ -1,10 +1,11 @@
 import 'dart:convert';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cpi_result_checker/data/my_routes.dart';
 import 'package:cpi_result_checker/data/my_text.dart';
+import 'package:cpi_result_checker/data/storage_key.dart';
 import 'package:cpi_result_checker/model/department.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +19,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  List<Department> _departments = [];
+  int responseCode = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +74,14 @@ class _SplashScreenState extends State<SplashScreen> {
     var url = Uri.parse(MyText.baseUrl + '/departments');
     var response = await http.get(url);
 
-    if (response.statusCode == 200) {
+    responseCode = response.statusCode;
+
+    if (responseCode == 200) {
       Iterable l = json.decode(response.body);
-      _departments =
+      List<Department> departments =
           List<Department>.from(l.map((model) => Department.fromJson(model)));
+
+      storeDepartments(departments);
     } else {
       FlutterToast.error('Failed to load departments!');
       throw Exception('Failed to load departments');
@@ -84,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void onTxtAnimFinish() {
-    if (_departments.isNotEmpty) {
+    if (responseCode == 200) {
       Navigator.pushReplacementNamed(
         context,
         MyRoutes.informationScreen,
@@ -93,5 +98,14 @@ class _SplashScreenState extends State<SplashScreen> {
       FlutterToast.create(
           'Failed to load departments!\nServer issue, try again later!');
     }
+  }
+
+  void storeDepartments(List departments) {
+    Map map = {};
+    for (Department d in departments) {
+      map[d.name] = d.id;
+    }
+
+    GetStorage().write(StorageKey.departments, map);
   }
 }

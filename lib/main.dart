@@ -3,8 +3,10 @@ import 'package:cpi_result_checker/screens/information_screen.dart';
 import 'package:cpi_result_checker/screens/result_screen.dart';
 import 'package:cpi_result_checker/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         MyRoutes.splashScreen: (context) => const SplashScreen(),
-        MyRoutes.informationScreen: (context) => const InformationScreen(),
+        MyRoutes.informationScreen: (context) => InformationScreen(),
         MyRoutes.resultScreen: (context) => const ResultScreen(),
       },
       initialRoute: MyRoutes.splashScreen,
